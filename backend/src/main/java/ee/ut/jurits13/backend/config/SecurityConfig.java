@@ -1,4 +1,4 @@
-package ee.ut.jurits13.backend;
+package ee.ut.jurits13.backend.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
