@@ -23,13 +23,22 @@ public class ExerciseController {
     }
 
     @GetMapping("/{id}")
-    public Exercise getExerciseByID(@PathVariable Long id) {
-        return exerciseService.getExerciseByID(id)
-                .orElseThrow(() -> new RuntimeException("Exercise not found"));
+    public Exercise getExerciseById(@PathVariable Long id) {
+        return exerciseService.getExerciseById(id);
     }
 
     @PostMapping
-    Exercise createExercise(@Valid @RequestBody Exercise exercise) {
+    public Exercise createExercise(@Valid @RequestBody Exercise exercise) {
         return exerciseService.createExercise(exercise);
+    }
+
+    @PutMapping("/{id}")
+    public Exercise updateExercise(@PathVariable Long id, @Valid @RequestBody Exercise newExercise) {
+        return exerciseService.updateExercise(id, newExercise);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteExercise(@PathVariable Long id) {
+        exerciseService.deleteExercise(id);
     }
 }
