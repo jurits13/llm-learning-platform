@@ -1,12 +1,13 @@
 package ee.ut.jurits13.backend.controller;
 
+import ee.ut.jurits13.backend.dto.ExerciseRequestDTO;
 import ee.ut.jurits13.backend.entity.Exercise;
 import ee.ut.jurits13.backend.service.ExerciseService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/exercises")
@@ -28,16 +29,18 @@ public class ExerciseController {
     }
 
     @PostMapping
-    public Exercise createExercise(@Valid @RequestBody Exercise exercise) {
-        return exerciseService.createExercise(exercise);
+    @ResponseStatus(HttpStatus.CREATED)
+    public Exercise createExercise(@Valid @RequestBody ExerciseRequestDTO dto) {
+        return exerciseService.createExercise(dto);
     }
 
     @PutMapping("/{id}")
-    public Exercise updateExercise(@PathVariable Long id, @Valid @RequestBody Exercise newExercise) {
-        return exerciseService.updateExercise(id, newExercise);
+    public Exercise updateExercise(@PathVariable Long id, @Valid @RequestBody ExerciseRequestDTO dto) {
+        return exerciseService.updateExercise(id, dto);
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteExercise(@PathVariable Long id) {
         exerciseService.deleteExercise(id);
     }

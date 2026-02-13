@@ -1,5 +1,6 @@
 package ee.ut.jurits13.backend.service;
 
+import ee.ut.jurits13.backend.dto.ExerciseRequestDTO;
 import ee.ut.jurits13.backend.entity.Exercise;
 import ee.ut.jurits13.backend.repository.ExerciseRepository;
 import org.springframework.http.HttpStatus;
@@ -25,21 +26,18 @@ public class ExerciseService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Exercise not found"));
     }
 
-    public Exercise createExercise(Exercise exercise) {
-        // simple validation
-        if (exercise.getTitle() == null || exercise.getTitle().isBlank()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Title is required");
-        }
-        return exerciseRepository.save(exercise);
+    public Exercise createExercise(ExerciseRequestDTO dto) {
+        Exercise e = new Exercise(dto.getTitle(), dto.getDescription(), dto.getDifficulty());
+        return exerciseRepository.save(e);
     }
 
-    public Exercise updateExercise(Long id, Exercise updatedExercise) {
+    public Exercise updateExercise(Long id, ExerciseRequestDTO dto) {
         Exercise existing = exerciseRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Exercise not found"));
 
-        existing.setTitle(updatedExercise.getTitle());
-        existing.setDescription(updatedExercise.getDescription());
-        existing.setDifficulty(updatedExercise.getDifficulty());
+        existing.setTitle(dto.getTitle());
+        existing.setDescription(dto.getDescription());
+        existing.setDifficulty(dto.getDifficulty());
 
         return exerciseRepository.save(existing);
     }

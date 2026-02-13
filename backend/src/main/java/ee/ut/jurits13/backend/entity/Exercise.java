@@ -1,24 +1,21 @@
 package ee.ut.jurits13.backend.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 
 @Entity
 public class Exercise {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    @Column(length = 200, nullable = false)
     private String title;
 
-    @Column(length = 2000)
+    @Column(length = 2000, nullable = false)
     private String description;
 
-    @Min(1)
-    @Max(5)
+    @Column(nullable = false)
     private Integer difficulty;
 
     public Exercise() {
