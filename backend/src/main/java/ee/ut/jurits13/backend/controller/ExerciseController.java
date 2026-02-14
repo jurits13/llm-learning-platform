@@ -1,7 +1,7 @@
 package ee.ut.jurits13.backend.controller;
 
 import ee.ut.jurits13.backend.dto.ExerciseRequestDTO;
-import ee.ut.jurits13.backend.entity.Exercise;
+import ee.ut.jurits13.backend.dto.ExerciseResponseDTO;
 import ee.ut.jurits13.backend.service.ExerciseService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -19,23 +19,23 @@ public class ExerciseController {
     }
 
     @GetMapping
-    public List<Exercise> getAllExercises() {
+    public List<ExerciseResponseDTO> getAllExercises() {
         return exerciseService.getAllExercises();
     }
 
     @GetMapping("/{id}")
-    public Exercise getExerciseById(@PathVariable Long id) {
+    public ExerciseResponseDTO getExerciseById(@PathVariable Long id) {
         return exerciseService.getExerciseById(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Exercise createExercise(@Valid @RequestBody ExerciseRequestDTO dto) {
+    public ExerciseResponseDTO createExercise(@Valid @RequestBody ExerciseRequestDTO dto) {
         return exerciseService.createExercise(dto);
     }
 
     @PutMapping("/{id}")
-    public Exercise updateExercise(@PathVariable Long id, @Valid @RequestBody ExerciseRequestDTO dto) {
+    public ExerciseResponseDTO updateExercise(@PathVariable Long id, @Valid @RequestBody ExerciseRequestDTO dto) {
         return exerciseService.updateExercise(id, dto);
     }
 
