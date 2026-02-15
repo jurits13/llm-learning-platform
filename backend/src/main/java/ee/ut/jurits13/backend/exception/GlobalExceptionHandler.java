@@ -1,6 +1,8 @@
 package ee.ut.jurits13.backend.exception;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -34,9 +36,17 @@ public class GlobalExceptionHandler {
 
     // Handles ResponseStatusException (404, etc.)
     @ExceptionHandler(ResponseStatusException.class)
-    public Map<String, Object> handleResponseStatus(ResponseStatusException ex) {
+    public ResponseEntity<Map<String, Object>> handleResponseStatus(ResponseStatusException ex) {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("error", ex.getReason());
+        return ResponseEntity.status(ex.getStatusCode()).body(body);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public Map<String, Object> handleNotReadable(HttpMessageNotReadableException ex) {
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("error", "Malformed JSON");
         return body;
     }
 

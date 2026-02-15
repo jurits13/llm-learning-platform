@@ -15,11 +15,8 @@ public class Submission {
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private Exercise exercise;
 
-    //@ManyToOne(optional = false, fetch = FetchType.LAZY)
-    //private User user;
-
-    @Column(length = 100, nullable = false)
-    private String studentIdentifier;
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    private User user;
 
     @Lob
     @Column(nullable = false)
@@ -38,9 +35,9 @@ public class Submission {
     protected Submission() {
     }
 
-    public Submission(Exercise exercise, String studentIdentifier, String answer) {
+    public Submission(Exercise exercise, User user, String answer) {
         this.exercise = exercise;
-        this.studentIdentifier = studentIdentifier;
+        this.user = user;
         this.answer = answer;
     }
 
@@ -57,12 +54,8 @@ public class Submission {
         return exercise;
     }
 
-    //public User getUser() {
-    //    return user;
-    //}
-
-    public String getStudentIdentifier() {
-        return studentIdentifier;
+    public User getUser() {
+        return user;
     }
 
     public String getAnswer() {

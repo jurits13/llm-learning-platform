@@ -9,9 +9,8 @@ public class SubmissionRequestDTO {
     @NotNull(message = "Exercise id is required")
     private Long exerciseId;
 
-    @NotBlank(message = "Student identifier is required")
-    @Size(max = 100, message = "Student identifier must be at most 100 characters")
-    private String studentIdentifier;
+    @NotNull(message="User id is required")
+    private Long userId;
 
     @NotBlank(message = "Answer is required")
     @Size(max = 20_000, message = "Answer must be at most 20_000 characters")
@@ -21,8 +20,8 @@ public class SubmissionRequestDTO {
         return exerciseId;
     }
 
-    public String getStudentIdentifier() {
-        return studentIdentifier;
+    public Long getUserId() {
+        return userId;
     }
 
     public String getAnswer() {
@@ -33,8 +32,8 @@ public class SubmissionRequestDTO {
         this.exerciseId = exerciseId;
     }
 
-    public void setStudentIdentifier(String studentIdentifier) {
-        this.studentIdentifier = studentIdentifier;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public void setAnswer(String answer) {
