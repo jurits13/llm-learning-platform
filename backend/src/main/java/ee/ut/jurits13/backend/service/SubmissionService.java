@@ -19,11 +19,13 @@ public class SubmissionService {
     private final SubmissionRepository submissionRepository;
     private final ExerciseRepository exerciseRepository;
     private final UserRepository userRepository;
+    private final FeedbackService feedbackService;
 
-    public SubmissionService(SubmissionRepository submissionRepository, ExerciseRepository exerciseRepository, UserRepository userRepository) {
+    public SubmissionService(SubmissionRepository submissionRepository, ExerciseRepository exerciseRepository, UserRepository userRepository, FeedbackService feedbackService) {
         this.submissionRepository = submissionRepository;
         this.exerciseRepository = exerciseRepository;
         this.userRepository = userRepository;
+        this.feedbackService = feedbackService;
     }
 
     private SubmissionResponseDTO toResponseDTO(Submission submission) {
@@ -35,7 +37,10 @@ public class SubmissionService {
                 submission.getAnswer(),
                 submission.getIsCorrect(),
                 submission.getFeedback(),
-                submission.getCreatedAt()
+                submission.getCreatedAt(),
+                submission.getLlmModel(),
+                submission.getPromptVersion(),
+                submission.getEvaluatedAt()
         );
     }
 
@@ -57,11 +62,26 @@ public class SubmissionService {
         User user = userRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
-
+        // 1) Save initial submission
         Submission s = new Submission(exercise, user, dto.getAnswer());
         Submission saved = submissionRepository.save(s);
 
-        return toResponseDTO(saved);
+        // 2) Generate coach-style feedback (stub for now)
+        String feedback = feedbackService.generateCoachFeedback(exercise, saved.getAnswer());
+
+        // 3) Store feedback + traceability metadata
+        saved.setFeedback(feedback);
+        saved.setLlmModel("stub");
+        saved.setPromptVersion("v1");
+        saved.setEvaluatedAt(java.time.Instant.now());
+
+        // optional: keep isCorrect null for now
+        // saved.setIsCorrect(null);
+
+        // 4) Save updated submission
+        Submission updated = submissionRepository.save(saved);
+
+        return toResponseDTO(updated);
     }
 
     public void deleteSubmission(Long id) {

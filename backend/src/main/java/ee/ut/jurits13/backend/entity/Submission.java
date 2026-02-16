@@ -32,6 +32,15 @@ public class Submission {
     @Column(nullable = false, updatable = false)
     private Instant createdAt;
 
+    @Column(length = 100)
+    private String llmModel;
+
+    @Column(length = 50)
+    private String promptVersion;
+
+    @Column
+    private Instant evaluatedAt;
+
     protected Submission() {
     }
 
@@ -74,6 +83,18 @@ public class Submission {
         return createdAt;
     }
 
+    public String getLlmModel() {
+        return llmModel;
+    }
+
+    public String getPromptVersion() {
+        return promptVersion;
+    }
+
+    public Instant getEvaluatedAt() {
+        return evaluatedAt;
+    }
+
     public void setAnswer(String answer) {
         this.answer = answer;
     }
@@ -85,4 +106,17 @@ public class Submission {
     public void setFeedback(String feedback) {
         this.feedback = feedback;
     }
+
+    public void setLlmModel(String llmModel) {
+        this.llmModel = llmModel;
+    }
+
+    public void setPromptVersion(String promptVersion) {
+        this.promptVersion = promptVersion;
+    }
+
+    public void setEvaluatedAt(Instant evaluatedAt) {
+        this.evaluatedAt = evaluatedAt;
+    }
+
 }

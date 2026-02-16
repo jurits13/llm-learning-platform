@@ -14,6 +14,10 @@ public class SubmissionResponseDTO {
     private Boolean isCorrect;
     private String feedback;
     private Instant createdAt;
+    private String llmModel;
+    private String promptVersion;
+    private Instant evaluatedAt;
+
 
     public SubmissionResponseDTO(
             Long id,
@@ -23,7 +27,10 @@ public class SubmissionResponseDTO {
             String answer,
             Boolean isCorrect,
             String feedback,
-            Instant createdAt
+            Instant createdAt,
+            String llmModel,
+            String promptVersion,
+            Instant evaluatedAt
     ) {
         this.id = id;
         this.exerciseId = exerciseId;
@@ -33,6 +40,9 @@ public class SubmissionResponseDTO {
         this.isCorrect = isCorrect;
         this.feedback = feedback;
         this.createdAt = createdAt;
+        this.llmModel = llmModel;
+        this.promptVersion = promptVersion;
+        this.evaluatedAt = evaluatedAt;
     }
 
     public Long getId() { return id; }
@@ -45,4 +55,16 @@ public class SubmissionResponseDTO {
     public Boolean getIsCorrect() { return isCorrect; }
     public String getFeedback() { return feedback; }
     public Instant getCreatedAt() { return createdAt; }
+
+    public String getLlmModel() {
+        return llmModel;
+    }
+
+    public String getPromptVersion() {
+        return promptVersion;
+    }
+
+    public Instant getEvaluatedAt() {
+        return evaluatedAt;
+    }
 }
