@@ -33,16 +33,16 @@ class SubmissionFlowTest {
     ExerciseRepository exerciseRepository;
 
     @Autowired
-    SubmissionRepository submissionRepository;   // <-- ADD THIS
+    SubmissionRepository submissionRepository;
 
     private Long userId;
     private Long exerciseId;
 
     @BeforeEach
     void setup() {
-        submissionRepository.deleteAll();  // <-- FIRST
-        exerciseRepository.deleteAll();    // <-- SECOND
-        userRepository.deleteAll();        // <-- THIRD
+        submissionRepository.deleteAll();
+        exerciseRepository.deleteAll();
+        userRepository.deleteAll();
 
         User user = userRepository.save(new User("student1", UserRole.STUDENT));
         Exercise exercise = exerciseRepository.save(

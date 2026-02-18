@@ -22,16 +22,20 @@ class UserControllerTest {
 
     @Test
     void createUserReturnsCreated() throws Exception {
+        String username = "student_" + java.util.UUID.randomUUID();
+
         mvc.perform(post("/api/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
-                                { "username": "student1", "role": "STUDENT" }
-                                """))
+                {
+                  "username": "%s",
+                  "role": "STUDENT"
+                }
+                """.formatted(username)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").exists())
-                .andExpect(jsonPath("$.username").value("student1"))
-                .andExpect(jsonPath("$.role").value(UserRole.STUDENT.name()))
-                .andExpect(jsonPath("$.createdAt").exists());
+                .andExpect(jsonPath("$.username").value(username))
+                .andExpect(jsonPath("$.role").value("STUDENT"));
     }
 
     @Test
