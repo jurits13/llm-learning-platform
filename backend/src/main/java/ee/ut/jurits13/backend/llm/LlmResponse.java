@@ -1,4 +1,5 @@
 package ee.ut.jurits13.backend.llm;
 
-public class LlmResponse {
+public record LlmResponse(String content, String model, String promptVersion) {
+
 }

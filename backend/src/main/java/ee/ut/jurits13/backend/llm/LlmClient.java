@@ -1,4 +1,5 @@
 package ee.ut.jurits13.backend.llm;
 
-public class LlmClient {
+public interface LlmClient {
+    LlmResponse generate(String systemPrompt, String userPrompt);
 }
