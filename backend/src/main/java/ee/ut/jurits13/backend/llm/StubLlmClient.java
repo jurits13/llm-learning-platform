@@ -1,28 +1,30 @@
 package ee.ut.jurits13.backend.llm;
 
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 @Component
-@Primary
+@Profile("!openai")
 public class StubLlmClient implements LlmClient {
     @Override
     public LlmResponse generate(String systemPrompt, String userPrompt) {
-
         String feedback = """
-                I will help you as a learning coach.
+                I can see you are working through the problem.
 
-                What to think about next:
-                1) What exactly is the expected behavior?
-                2) Which part of your current solution are you least sure about?
-                3) Can you test one smaller part of the problem separately?
+                Observation:
+                You have already made an attempt, which is a good start.
 
                 Hint:
-                - Try to explain the issue step by step in your own words before changing the code.
+                Try to isolate one small part of the issue and verify what is happening there first.
 
-                Based on your latest message:
-                "%s"
-                """.formatted(userPrompt);
+                Guiding questions:
+                - What result do you expect at this step?
+                - What evidence do you have that the relevant code is actually running?
+
+                Next step:
+                Add one small check, print, or console log and compare the expected and actual behavior.
+                """;
 
         return new LlmResponse(feedback, "stub", "v1");
     }

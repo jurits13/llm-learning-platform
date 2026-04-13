@@ -91,6 +91,13 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!-- OpenAi API -->
+		<dependency>
+			<groupId>com.openai</groupId>
+			<artifactId>openai-java</artifactId>
+			<version>4.31.0</version>
+		</dependency>
+
 		<!-- Needed in Spring Boot 4 for MockMvc auto-config -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

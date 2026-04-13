@@ -61,7 +61,9 @@ class MessageFlowTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.role", is("COACH")))
-                .andExpect(jsonPath("$.content", containsString("I will help you as a learning coach.")))
+                .andExpect(jsonPath("$.content", containsString("Hint:")))
+                .andExpect(jsonPath("$.content", containsString("Guiding questions:")))
+                .andExpect(jsonPath("$.content", containsString("Next step:")))
                 .andExpect(jsonPath("$.llmModel", is("stub")))
                 .andExpect(jsonPath("$.promptVersion", is("v1")))
                 .andExpect(jsonPath("$.createdAt").exists());
