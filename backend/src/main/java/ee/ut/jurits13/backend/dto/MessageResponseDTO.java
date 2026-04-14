@@ -9,6 +9,8 @@ public class MessageResponseDTO {
     private Instant createdAt;
     private String llmModel;
     private String promptVersion;
+    private boolean filteredByPolicy;
+    private String policyReason;
 
     public MessageResponseDTO(
             Long id,
@@ -16,7 +18,9 @@ public class MessageResponseDTO {
             String content,
             Instant createdAt,
             String llmModel,
-            String promptVersion
+            String promptVersion,
+            boolean filteredByPolicy,
+            String policyReason
     ) {
         this.id = id;
         this.role = role;
@@ -24,6 +28,8 @@ public class MessageResponseDTO {
         this.createdAt = createdAt;
         this.llmModel = llmModel;
         this.promptVersion = promptVersion;
+        this.filteredByPolicy = filteredByPolicy;
+        this.policyReason = policyReason;
     }
 
     public Long getId() {
@@ -48,5 +54,13 @@ public class MessageResponseDTO {
 
     public String getPromptVersion() {
         return promptVersion;
+    }
+
+    public boolean isFilteredByPolicy() {
+        return filteredByPolicy;
+    }
+
+    public String getPolicyReason() {
+        return policyReason;
     }
 }

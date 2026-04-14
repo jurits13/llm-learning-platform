@@ -6,8 +6,10 @@ import ee.ut.jurits13.backend.entity.HelpSession;
 import ee.ut.jurits13.backend.entity.User;
 import ee.ut.jurits13.backend.repository.HelpSessionRepository;
 import ee.ut.jurits13.backend.repository.UserRepository;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -37,6 +39,7 @@ public class HelpSessionService {
         );
     }
 
+    @Transactional
     public HelpSessionResponseDTO createSession(HelpSessionRequestDTO dto) {
         User user = userRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
@@ -53,6 +56,7 @@ public class HelpSessionService {
         return toResponseDTO(saved);
     }
 
+    @Transactional(readOnly = true)
     public HelpSessionResponseDTO getSessionById(Long id) {
         HelpSession session = helpSessionRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Help session not found"));
@@ -60,6 +64,7 @@ public class HelpSessionService {
         return toResponseDTO(session);
     }
 
+    @Transactional(readOnly = true)
     public List<HelpSessionResponseDTO> getSessionsByUserId(Long userId) {
         if (!userRepository.existsById(userId)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
@@ -71,6 +76,7 @@ public class HelpSessionService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public HelpSession getSessionEntityById(Long id) {
         return helpSessionRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Help session not found"));

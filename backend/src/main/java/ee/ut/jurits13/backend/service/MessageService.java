@@ -37,7 +37,9 @@ public class MessageService {
                 message.getContent(),
                 message.getCreatedAt(),
                 message.getLlmModel(),
-                message.getPromptVersion()
+                message.getPromptVersion(),
+                message.isFilteredByPolicy(),
+                message.getPolicyReason()
         );
     }
 
@@ -63,6 +65,8 @@ public class MessageService {
         Message coachMessage = new Message(session, MessageRole.COACH, coachReply.content());
         coachMessage.setLlmModel(coachReply.llmModel());
         coachMessage.setPromptVersion(coachReply.promptVersion());
+        coachMessage.setFilteredByPolicy(coachReply.filtered());
+        coachMessage.setPolicyReason(coachReply.filterReason());
 
         Message savedCoachMessage = messageRepository.save(coachMessage);
 

@@ -31,6 +31,12 @@ public class Message {
     @Column(length = 50)
     private String promptVersion;
 
+    @Column(nullable = false)
+    private boolean filteredByPolicy = false;
+
+    @Column(length = 100)
+    private String policyReason;
+
     @PrePersist
     void onCreate() {
         this.createdAt = Instant.now();
@@ -91,5 +97,21 @@ public class Message {
 
     public void setPromptVersion(String promptVersion) {
         this.promptVersion = promptVersion;
+    }
+
+    public boolean isFilteredByPolicy() {
+        return filteredByPolicy;
+    }
+
+    public void setFilteredByPolicy(boolean filteredByPolicy) {
+        this.filteredByPolicy = filteredByPolicy;
+    }
+
+    public String getPolicyReason() {
+        return policyReason;
+    }
+
+    public void setPolicyReason(String policyReason) {
+        this.policyReason = policyReason;
     }
 }
