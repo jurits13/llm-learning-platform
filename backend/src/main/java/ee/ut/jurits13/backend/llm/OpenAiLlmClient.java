@@ -1,86 +1,63 @@
 package ee.ut.jurits13.backend.llm;
 
+import com.openai.client.OpenAIClient;
+import com.openai.client.okhttp.OpenAIOkHttpClient;
+import com.openai.models.responses.Response;
+import com.openai.models.responses.ResponseCreateParams;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-
-import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 
 @Component
 @Profile("openai")
 public class OpenAiLlmClient implements LlmClient {
 
-    private final String apiKey = System.getenv("OPENAI_API_KEY");
-    private final HttpClient httpClient = HttpClient.newHttpClient();
+    private final OpenAIClient client;
+    private final String model;
+    private final String promptVersion;
+
+    public OpenAiLlmClient(
+            @Value("${app.llm.model:gpt-5.4-mini}") String model,
+            @Value("${app.llm.prompt-version:v1}") String promptVersion
+    ) {
+        this.client = OpenAIOkHttpClient.fromEnv();
+        this.model = model;
+        this.promptVersion = promptVersion;
+    }
 
     @Override
     public LlmResponse generate(String systemPrompt, String userPrompt) {
         try {
-            String requestBody = """
-                    {
-                      "model": "gpt-5.4-mini",
-                      "input": [
-                        {"role": "system", "content": "%s"},
-                        {"role": "user", "content": "%s"}
-                      ]
-                    }
-                    """.formatted(
-                    escape(systemPrompt),
-                    escape(userPrompt)
-            );
-
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("https://api.openai.com/v1/responses"))
-                    .header("Authorization", "Bearer " + apiKey)
-                    .header("Content-Type", "application/json")
-                    .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+            ResponseCreateParams params = ResponseCreateParams.builder()
+                    .model(model)
+                    .instructions(systemPrompt)
+                    .input(userPrompt)
                     .build();
 
-            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-            
-            System.out.println("Status: " + response.statusCode());
-            System.out.println("Body: " + response.body());
+            Response response = client.responses().create(params);
 
-            String content = extractText(response.body());
+            String content = extractOutputText(response);
 
-            return new LlmResponse(content, "gpt-5.4-mini", "v1");
+            return new LlmResponse(content, model, promptVersion);
 
-        } catch (IOException | InterruptedException e) {
+        } catch (Exception e) {
             throw new RuntimeException("LLM call failed", e);
         }
     }
 
-    private String escape(String text) {
-        return text.replace("\"", "\\\"").replace("\n", "\\n");
-    }
+    private String extractOutputText(Response response) {
+        String text = response.output().stream()
+                .flatMap(item -> item.message().stream())
+                .flatMap(message -> message.content().stream())
+                .flatMap(content -> content.outputText().stream())
+                .map(outputText -> outputText.text())
+                .collect(java.util.stream.Collectors.joining())
+                .trim();
 
-    private String extractText(String json) {
-        int typeIndex = json.indexOf("\"type\": \"output_text\"");
-        if (typeIndex == -1) {
-            return "No response from model";
+        if (text.isBlank()) {
+            return "I’m sorry — I could not generate a coaching response right now.";
         }
 
-        int textIndex = json.indexOf("\"text\": \"", typeIndex);
-        if (textIndex == -1) {
-            return "No response from model";
-        }
-
-        textIndex += 9;
-        int endIndex = json.indexOf("\"", textIndex);
-        if (endIndex == -1) {
-            return "No response from model";
-        }
-
-        return json.substring(textIndex, endIndex)
-                .replace("\\n", "\n")
-                .replace("\\\"", "\"")
-                .replace("\\u2019", "’")
-                .replace("\\u201c", "“")
-                .replace("\\u201d", "”")
-                .replace("\\u2014", "—");
+        return text;
     }
 }

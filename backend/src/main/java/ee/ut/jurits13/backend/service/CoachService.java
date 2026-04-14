@@ -14,10 +14,12 @@ public class CoachService {
 
     private final LlmClient llmClient;
     private final PromptBuilder promptBuilder;
+    private final CoachPolicyService coachPolicyService;
 
-    public CoachService(LlmClient llmClient, PromptBuilder promptBuilder) {
+    public CoachService(LlmClient llmClient, PromptBuilder promptBuilder, CoachPolicyService coachPolicyService) {
         this.llmClient = llmClient;
         this.promptBuilder = promptBuilder;
+        this.coachPolicyService = coachPolicyService;
     }
 
     public CoachReply generateReply(HelpSession session, List<Message> messages) {
@@ -26,13 +28,23 @@ public class CoachService {
 
         LlmResponse response = llmClient.generate(systemPrompt, userPrompt);
 
+        CoachPolicyResult policyResult = coachPolicyService.apply(response.content());
+
         return new CoachReply(
-                response.content(),
+                policyResult.content(),
                 response.model(),
-                response.promptVersion()
+                response.promptVersion(),
+                policyResult.filtered(),
+                policyResult.reason()
         );
     }
 
-    public record CoachReply(String content, String llmModel, String promptVersion) {
+    public record CoachReply(
+            String content,
+            String llmModel,
+            String promptVersion,
+            boolean filtered,
+            String filterReason
+    ) {
     }
 }
