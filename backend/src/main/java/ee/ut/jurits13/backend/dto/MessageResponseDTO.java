@@ -1,5 +1,7 @@
 package ee.ut.jurits13.backend.dto;
 
+import ee.ut.jurits13.backend.entity.CoachResponseLevel;
+
 import java.time.Instant;
 
 public class MessageResponseDTO {
@@ -9,6 +11,7 @@ public class MessageResponseDTO {
     private Instant createdAt;
     private String llmModel;
     private String promptVersion;
+    private CoachResponseLevel coachResponseLevel;
     private boolean filteredByPolicy;
     private String policyReason;
 
@@ -19,6 +22,7 @@ public class MessageResponseDTO {
             Instant createdAt,
             String llmModel,
             String promptVersion,
+            CoachResponseLevel coachResponseLevel,
             boolean filteredByPolicy,
             String policyReason
     ) {
@@ -28,6 +32,7 @@ public class MessageResponseDTO {
         this.createdAt = createdAt;
         this.llmModel = llmModel;
         this.promptVersion = promptVersion;
+        this.coachResponseLevel = coachResponseLevel;
         this.filteredByPolicy = filteredByPolicy;
         this.policyReason = policyReason;
     }
@@ -54,6 +59,10 @@ public class MessageResponseDTO {
 
     public String getPromptVersion() {
         return promptVersion;
+    }
+
+    public CoachResponseLevel getCoachResponseLevel() {
+        return coachResponseLevel;
     }
 
     public boolean isFilteredByPolicy() {

@@ -38,6 +38,7 @@ public class MessageService {
                 message.getCreatedAt(),
                 message.getLlmModel(),
                 message.getPromptVersion(),
+                message.getCoachResponseLevel(),
                 message.isFilteredByPolicy(),
                 message.getPolicyReason()
         );
@@ -67,6 +68,7 @@ public class MessageService {
         coachMessage.setPromptVersion(coachReply.promptVersion());
         coachMessage.setFilteredByPolicy(coachReply.filtered());
         coachMessage.setPolicyReason(coachReply.filterReason());
+        coachMessage.setCoachResponseLevel(coachReply.coachResponseLevel());
 
         Message savedCoachMessage = messageRepository.save(coachMessage);
 

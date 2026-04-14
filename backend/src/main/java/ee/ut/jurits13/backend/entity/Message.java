@@ -31,6 +31,10 @@ public class Message {
     @Column(length = 50)
     private String promptVersion;
 
+    @Enumerated(EnumType.STRING)
+    @Column(length = 40)
+    private CoachResponseLevel coachResponseLevel;
+
     @Column(nullable = false)
     private boolean filteredByPolicy = false;
 
@@ -97,6 +101,14 @@ public class Message {
 
     public void setPromptVersion(String promptVersion) {
         this.promptVersion = promptVersion;
+    }
+
+    public CoachResponseLevel getCoachResponseLevel() {
+        return coachResponseLevel;
+    }
+
+    public void setCoachResponseLevel(CoachResponseLevel coachResponseLevel) {
+        this.coachResponseLevel = coachResponseLevel;
     }
 
     public boolean isFilteredByPolicy() {

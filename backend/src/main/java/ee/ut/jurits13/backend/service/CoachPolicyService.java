@@ -35,22 +35,16 @@ public class CoachPolicyService {
     private boolean isTooDirect(String lower) {
         return lower.contains("here is the solution")
                 || lower.contains("the solution is")
-                || lower.contains("the issue is")
-                || lower.contains("the problem is")
-                || lower.contains("just do ")
                 || lower.contains("replace it with")
                 || lower.contains("use this code")
                 || lower.contains("the correct code is")
                 || lower.contains("copy this")
                 || lower.contains("paste this")
-                || lower.contains("simply")
-                || lower.contains("you need to")
                 || lower.contains("all you need to do is")
                 || lower.contains("the fix is")
                 || lower.contains("fixed version")
                 || lower.contains("here’s the code")
                 || lower.contains("here is the code")
-                || lower.contains("do this:")
                 || lower.contains("change it to");
     }
 
