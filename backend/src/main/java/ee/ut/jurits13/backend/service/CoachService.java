@@ -40,12 +40,7 @@ public class CoachService {
 
         LlmResponse response = llmClient.generate(systemPrompt, userPrompt);
 
-        System.out.println("RAW COACH RESPONSE:\n" + response.content());
-
         CoachPolicyResult policyResult = coachPolicyService.apply(response.content());
-
-        System.out.println("POLICY RESULT: filtered=" + policyResult.filtered()
-                + ", reason=" + policyResult.reason());
 
         return new CoachReply(
                 policyResult.content(),
