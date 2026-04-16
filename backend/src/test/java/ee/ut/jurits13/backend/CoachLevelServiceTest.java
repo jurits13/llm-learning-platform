@@ -6,11 +6,13 @@ import ee.ut.jurits13.backend.entity.Message;
 import ee.ut.jurits13.backend.entity.MessageRole;
 import ee.ut.jurits13.backend.service.CoachLevelService;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@ActiveProfiles("test")
 class CoachLevelServiceTest {
 
     private final CoachLevelService coachLevelService = new CoachLevelService();

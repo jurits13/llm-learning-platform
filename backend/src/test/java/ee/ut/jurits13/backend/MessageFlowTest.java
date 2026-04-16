@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.*;
@@ -20,6 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
 class MessageFlowTest {
 
     @Autowired
@@ -204,6 +206,24 @@ class MessageFlowTest {
                 .getContentAsString();
 
         return extractId(response);
+    }
+
+    @Test
+    void postMessage_withOnlyPunctuation_returnsValidationError() throws Exception {
+        long sessionId = createHelpSession();
+
+        String messageRequest = """
+            {
+              "content": "....!!!!???"
+            }
+            """;
+
+        mockMvc.perform(post("/api/help-sessions/{id}/messages", sessionId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(messageRequest))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error", is("Validation failed")))
+                .andExpect(jsonPath("$.fields.content", is("Content must include at least one letter or number")));
     }
 
     private long extractId(String json) {

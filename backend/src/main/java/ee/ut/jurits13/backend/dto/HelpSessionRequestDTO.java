@@ -2,6 +2,7 @@ package ee.ut.jurits13.backend.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public class HelpSessionRequestDTO {
@@ -10,10 +11,18 @@ public class HelpSessionRequestDTO {
 
     @NotBlank
     @Size(max = 200)
+    @Pattern(
+            regexp = ".*[\\p{L}\\p{N}].*",
+            message = "Title must include at least one letter or number"
+    )
     private String title;
 
     @NotBlank
     @Size(max = 4000)
+    @Pattern(
+            regexp = ".*[\\p{L}\\p{N}].*",
+            message = "Problem description must include at least one letter or number"
+    )
     private String problemDescription;
 
     @Size(max = 20000)

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -21,6 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
 class HelpSessionControllerTest {
 
     @Autowired
@@ -179,6 +181,43 @@ class HelpSessionControllerTest {
                         .content(requestBody))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.error", is("User not found")));
+    }
+
+    @Test
+    void createHelpSession_withOnlyPunctuationTitle_returnsValidationError() throws Exception {
+        String requestBody = """
+            {
+              "userId": %d,
+              "title": "....!!!???",
+              "problemDescription": "My button does nothing when I click it."
+            }
+            """.formatted(testUser.getId());
+
+        mockMvc.perform(post("/api/help-sessions")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error", is("Validation failed")))
+                .andExpect(jsonPath("$.fields.title", is("Title must include at least one letter or number")));
+    }
+
+    @Test
+    void createHelpSession_withOnlyPunctuationProblemDescription_returnsValidationError() throws Exception {
+        String requestBody = """
+            {
+              "userId": %d,
+              "title": "Button click not working",
+              "problemDescription": "....!!!???"
+            }
+            """.formatted(testUser.getId());
+
+        mockMvc.perform(post("/api/help-sessions")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error", is("Validation failed")))
+                .andExpect(jsonPath("$.fields.problemDescription",
+                        is("Problem description must include at least one letter or number")));
     }
 
     private long extractId(String json) {

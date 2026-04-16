@@ -4,6 +4,8 @@ import com.openai.client.OpenAIClient;
 import com.openai.client.okhttp.OpenAIOkHttpClient;
 import com.openai.models.responses.Response;
 import com.openai.models.responses.ResponseCreateParams;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -11,6 +13,8 @@ import org.springframework.stereotype.Component;
 @Component
 @Profile("openai")
 public class OpenAiLlmClient implements LlmClient {
+
+    private static final Logger log = LoggerFactory.getLogger(OpenAiLlmClient.class);
 
     private final OpenAIClient client;
     private final String model;
@@ -41,7 +45,23 @@ public class OpenAiLlmClient implements LlmClient {
             return new LlmResponse(content, model, promptVersion);
 
         } catch (Exception e) {
-            throw new RuntimeException("LLM call failed", e);
+            log.error("LLM call failed", e);
+
+            return new LlmResponse(
+                    """
+                    I’m having trouble generating a full coaching reply right now.
+
+                    Let’s still work through the problem step by step.
+
+                    What did you expect to happen, and what actually happened?
+
+                    One useful next step is to inspect one small part of the code and compare the expected and actual behavior.
+
+                    What is the first specific thing you would check?
+                    """,
+                    model,
+                    promptVersion
+            );
         }
     }
 
@@ -55,7 +75,13 @@ public class OpenAiLlmClient implements LlmClient {
                 .trim();
 
         if (text.isBlank()) {
-            return "I’m sorry — I could not generate a coaching response right now.";
+            return """
+                    I’m sorry — I could not generate a coaching response right now.
+
+                    What did you expect to happen, and what actually happened?
+
+                    What is one small thing you can inspect first?
+                    """;
         }
 
         return text;

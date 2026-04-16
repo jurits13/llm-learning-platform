@@ -3,9 +3,11 @@ package ee.ut.jurits13.backend;
 import ee.ut.jurits13.backend.service.CoachPolicyResult;
 import ee.ut.jurits13.backend.service.CoachPolicyService;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@ActiveProfiles("test")
 class CoachPolicyServiceTest {
 
     private final CoachPolicyService coachPolicyService = new CoachPolicyService();
