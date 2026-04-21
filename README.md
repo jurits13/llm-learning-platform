@@ -1,42 +1,95 @@
-# LLM-Supported Web Development Learning Platform
+# LLM-Supported Learning Platform for Web Development Education
 
-This project is developed as a Bachelor's thesis project.
+This project was developed as part of a Bachelor's thesis.
 
-The goal is to create a web-based learning platform for web development where a Large Language Model (LLM) acts as a learning coach instead of simply generating full solutions. The platform provides exercises, allows students to submit answers, and generates reflective feedback to support deeper understanding.
+This project was developed as part of a Bachelor's thesis. Its goal is to build a web-based learning platform for web development where a Large Language Model (LLM) acts as a learning coach rather than a direct solution generator. Instead of immediately providing full code answers, the system guides learners using hints, reflective questions, debugging prompts, and small-step scaffolding.
 
 ## Thesis Context
 
 **Title:** Developing a Learning Platform for Web Development with LLM Support  
+**Author:** Jüri Tsõmbaljuk  
+**Supervisor:** Mohamad Gharib
 
-**Author:** Jüri Tsõmbaljuk
+## Project Overview
 
-**Supervisor:** Mohamad Gharib 
+The platform allows a student to:
+
+- create a student profile
+- create a help session for a programming problem
+- submit a question, code snippet, and what they have already tried
+- continue the interaction as a multi-turn conversation
+- receive coaching-style LLM responses instead of direct full solutions
+
+The backend stores sessions and messages, including metadata about:
+
+- coaching level
+- prompt version
+- LLM model
+- whether a reply was filtered by policy
+
+The frontend provides a simple interface for creating a session and chatting with the coach.
+
+## Main Design Idea
+
+The core idea of the project is that the LLM should function as a **coach**, not just a code generator.
+
+The system aims to support:
+
+- scaffolding
+- reflection
+- metacognition
+- step-by-step reasoning
+- responsible use of LLMs in programming learning
+
+To support this, the backend includes:
+
+- structured prompt building
+- coaching level selection
+- lightweight progress assessment
+- policy filtering for overly direct replies
+- fallback responses for failures or filtered outputs
 
 ## Tech Stack
 
 ### Backend
-- Java 17+
+- Java 21
 - Spring Boot
-- Spring Web (REST API)
-- Spring Data JPA (Hibernate)
-- Spring Validation
-- Spring Security (currently open access)
-- Database: PostgreSQL (currently H2)
+- Spring Web
+- Spring Data JPA / Hibernate
+- Jakarta Validation
+- Spring Security
+- H2 database
+- OpenAI Java SDK
+- JUnit 5
+- MockMvc
 
-### Frontend (planned)
-- Not implemented yet
+### Frontend
+- React
+- Vite
+- Axios
+- CSS
 
-## API Endpoints
+## Architecture Overview
+
+### Backend modules
+- **Controllers** – REST API endpoints
+- **Services** – business logic, LLM orchestration, coaching logic
+- **Repositories** – JPA access to database entities
+- **DTOs** – request and response models
+- **Entities** – `User`, `HelpSession`, `Message`
+- **LLM layer** – abstraction over OpenAI and stub implementation
+- **Policy layer** – filters overly direct or unsuitable LLM responses
+
+### Frontend flow
+1. Create a student user
+2. Create a help session
+3. Chat with the coach
+4. View coach replies and conversation history
+
+## Backend API
 
 ### Health
-- `GET /api/health` → returns `OK`
-
-### Exercises
-- `GET /api/exercises`
-- `GET /api/exercises/{id}`
-- `POST /api/exercises`
-- `PUT /api/exercises/{id}`
-- `DELETE /api/exercises/{id}`
+- `GET /api/health`
 
 ### Users
 - `GET /api/users`
@@ -44,28 +97,109 @@ The goal is to create a web-based learning platform for web development where a 
 - `POST /api/users`
 - `DELETE /api/users/{id}`
 
-### Submissions
-- `GET /api/submissions`
-- `GET /api/submissions/{id}`
-- `POST /api/submissions`
-- `DELETE /api/submissions/{id}`
+### Help Sessions
+- `POST /api/help-sessions`
+- `GET /api/help-sessions/{id}`
+- `GET /api/help-sessions/user/{userId}`
 
-## Running the Backend
+### Messages
+- `GET /api/help-sessions/{id}/messages`
+- `POST /api/help-sessions/{id}/messages`
+
+## Running the Project
 
 ### Requirements
-- Java 17+
+- Java 21
+- Node.js
+- npm
 - Maven
 
-### Run locally
-1. Clone the repository
-3. Run the application:
-   ```bash
-   ./mvnw spring-boot:run
-4. API will be available at:
-   http://localhost:8080/api
+## Backend
+From the `backend` directory:
 
-## API Overview
-- /api/exercises – manage exercises
-- /api/submissions – submit solutions and receive feedback
-- /api/users – user management
-- /api/health – health check
+### Run with stub LLM
+```bash
+SPRING_PROFILES_ACTIVE=dev ./mvnw spring-boot:run
+```
+
+### Run with OpenAI
+```bash
+SPRING_PROFILES_ACTIVE=openai ./mvnw spring-boot:run
+```
+### Run with OpenAI + dev profile
+```bash
+SPRING_PROFILES_ACTIVE=dev,openai ./mvnw spring-boot:run
+```
+
+The backend runs on:
+
+```text
+http://localhost:8080
+```
+
+## Frontend
+From the frontend directory:
+
+```bash
+npm install
+npm run dev
+```
+
+The frontend runs on:
+
+```text
+http://localhost:5173
+```
+
+## Database
+The project currently uses an H2 file-based database for prototype development:
+
+```properties
+spring.datasource.url=jdbc:h2:file:./data/llmplatform
+```
+
+The H2 console is enabled only in the `dev` profile.
+
+## OpenAI Configuration
+The real LLM integration is enabled with the `openai` Spring profile.
+
+The backend uses the OpenAI client from environment configuration, so your API key must be available in the environment when running with the `openai` profile.
+
+If the `openai` profile is not enabled, the system uses a stub client for development and testing.
+
+## Testing
+Backend tests include:
+
+- context loading
+- controller tests
+- validation tests
+- message flow tests
+- coach policy tests
+- coaching level tests
+
+Run backend tests with:
+
+```bash
+./mvnw test
+```
+
+## Current Limitations
+This project is a prototype developed within the scope of a Bachelor's thesis.
+
+Current limitations include:
+
+- no authentication or user accounts beyond simple user creation
+- simple UI focused on prototype evaluation rather than production polish
+- lightweight heuristic progress detection
+- policy filtering based on simple rule checks
+- H2 used instead of a production database
+- coaching quality depends on prompt design and LLM behavior
+
+## Research Focus
+This project is not intended to be a general-purpose coding assistant. Its main purpose is to explore how LLMs can be integrated into a learning platform in a way that supports:
+
+- independent thinking
+- conceptual understanding
+- reflective learning
+- guided debugging
+- responsible interaction with LLMs
