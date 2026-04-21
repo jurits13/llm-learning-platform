@@ -122,6 +122,11 @@ button:disabled {
   margin-bottom: 8px;
 }
 
+.message.pending {
+  opacity: 0.8;
+  font-style: italic;
+}
+
 .badge {
   font-size: 12px;
   padding: 4px 8px;

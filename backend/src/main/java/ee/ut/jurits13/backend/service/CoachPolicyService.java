@@ -15,7 +15,12 @@ public class CoachPolicyService {
 
         boolean hasLongCodeBlock = containsLongCodeBlock(trimmed);
         boolean tooDirect = isTooDirect(lower);
-        boolean hasNoQuestion = !trimmed.contains("?");
+        boolean lacksGuidanceSignal = !trimmed.contains("?")
+                && !lower.contains("try ")
+                && !lower.contains("think about")
+                && !lower.contains("next step")
+                && !lower.contains("consider")
+                && !lower.contains("inspect");
 
         if (hasLongCodeBlock) {
             return new CoachPolicyResult(fallback(), true, "long_code_block");
@@ -25,7 +30,7 @@ public class CoachPolicyService {
             return new CoachPolicyResult(fallback(), true, "too_direct");
         }
 
-        if (hasNoQuestion) {
+        if (lacksGuidanceSignal) {
             return new CoachPolicyResult(fallback(), true, "no_guiding_question");
         }
 
@@ -66,13 +71,13 @@ public class CoachPolicyService {
 
     private String fallback() {
         return """
-                Let’s slow down and inspect the problem step by step.
+            Let’s slow down and inspect the problem step by step.
 
-                What did you expect to happen, and what actually happened?
+            What did you expect this code to do, and what actually happened?
 
-                One useful next move is to test one small part of the flow and compare expected vs actual behavior.
+            One useful next move is to focus on one small part of the code and compare the expected and actual behavior.
 
-                What would you check first to confirm whether the button was found and whether the click handler is running?
-                """;
+            What is one specific line or expression you would inspect first, and why?
+            """;
     }
 }

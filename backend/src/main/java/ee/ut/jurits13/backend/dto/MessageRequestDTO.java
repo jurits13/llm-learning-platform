@@ -8,7 +8,7 @@ public class MessageRequestDTO {
     @NotBlank
     @Size(max = 10000)
     @Pattern(
-            regexp = ".*[\\p{L}\\p{N}].*",
+            regexp = "(?s).*[\\p{L}\\p{N}].*",
             message = "Content must include at least one letter or number"
     )
     private String content;

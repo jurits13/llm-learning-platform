@@ -34,9 +34,10 @@ public class CoachService {
     public CoachReply generateReply(HelpSession session, List<Message> messages) {
         String latestStudentMessage = extractLatestStudentMessage(messages);
         CoachResponseLevel level = coachLevelService.determineLevel(messages, latestStudentMessage);
+        CoachLevelService.StudentProgress progress = coachLevelService.assessProgress(latestStudentMessage);
 
-        String systemPrompt = promptBuilder.buildSystemPrompt(level);
-        String userPrompt = promptBuilder.buildUserPrompt(session, messages, level);
+        String systemPrompt = promptBuilder.buildSystemPrompt(level, progress);
+        String userPrompt = promptBuilder.buildUserPrompt(session, messages, level, progress);
 
         LlmResponse response = llmClient.generate(systemPrompt, userPrompt);
 

@@ -12,7 +12,7 @@ public class HelpSessionRequestDTO {
     @NotBlank
     @Size(max = 200)
     @Pattern(
-            regexp = ".*[\\p{L}\\p{N}].*",
+            regexp = "(?s).*[\\p{L}\\p{N}].*",
             message = "Title must include at least one letter or number"
     )
     private String title;
@@ -20,7 +20,7 @@ public class HelpSessionRequestDTO {
     @NotBlank
     @Size(max = 4000)
     @Pattern(
-            regexp = ".*[\\p{L}\\p{N}].*",
+            regexp = "(?s).*[\\p{L}\\p{N}].*",
             message = "Problem description must include at least one letter or number"
     )
     private String problemDescription;

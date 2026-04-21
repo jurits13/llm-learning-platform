@@ -99,6 +99,90 @@ class CoachLevelServiceTest {
         assertEquals(CoachResponseLevel.LEVEL_5_STRONG_SCAFFOLDING, level);
     }
 
+    @Test
+    void assessProgress_detectsCoreUnderstanding() {
+        CoachLevelService.StudentProgress progress = coachLevelService.assessProgress(
+                "I think map returns a new array and nums stays unchanged, so I should store it in a new variable."
+        );
+
+        assertEquals(CoachLevelService.StudentProgress.DEMONSTRATES_CORE_UNDERSTANDING, progress);
+    }
+
+    @Test
+    void assessProgress_detectsPartialUnderstanding() {
+        CoachLevelService.StudentProgress progress = coachLevelService.assessProgress(
+                "I think maybe it creates a copy and we can test by printing it out."
+        );
+
+        assertEquals(CoachLevelService.StudentProgress.PARTIAL_UNDERSTANDING, progress);
+    }
+
+    @Test
+    void assessProgress_detectsLowSignal() {
+        CoachLevelService.StudentProgress progress = coachLevelService.assessProgress("asdsdaf");
+
+        assertEquals(CoachLevelService.StudentProgress.LOW_SIGNAL, progress);
+    }
+
+    @Test
+    void assessProgress_detectsNeedForMoreExplicitSupport() {
+        CoachLevelService.StudentProgress progress = coachLevelService.assessProgress(
+                "I dont understand, sorry"
+        );
+
+        assertEquals(CoachLevelService.StudentProgress.NEEDS_MORE_EXPLICIT_SUPPORT, progress);
+    }
+
+    @Test
+    void determineLevel_whenStudentNeedsMoreExplicitSupport_returnsLevel4() {
+        List<Message> messages = List.of(
+                studentMessage("Why is new_items None?"),
+                coachMessage("What do you think append returns?"),
+                studentMessage("I dont understand, sorry")
+        );
+
+        CoachResponseLevel level = coachLevelService.determineLevel(
+                messages,
+                "I dont understand, sorry"
+        );
+
+        assertEquals(CoachResponseLevel.LEVEL_4_PARTIAL_EXPLANATION, level);
+    }
+
+    @Test
+    void assessProgress_detectsDirectBeginnerSupport() {
+        CoachLevelService.StudentProgress progress = coachLevelService.assessProgress(
+                "I am programming for the first time and I know nothing"
+        );
+
+        assertEquals(CoachLevelService.StudentProgress.DIRECT_BEGINNER_SUPPORT, progress);
+    }
+
+    @Test
+    void assessProgress_detectsDirectBeginnerSupportInRussian() {
+        CoachLevelService.StudentProgress progress = coachLevelService.assessProgress(
+                "я программирую впервые и ничего не знаю"
+        );
+
+        assertEquals(CoachLevelService.StudentProgress.DIRECT_BEGINNER_SUPPORT, progress);
+    }
+
+    @Test
+    void determineLevel_whenStudentNeedsDirectBeginnerSupport_returnsLevel4() {
+        List<Message> messages = List.of(
+                studentMessage("How can i remove these spaces"),
+                coachMessage("What do you expect the output to look like?"),
+                studentMessage("i am programming for the first time")
+        );
+
+        CoachResponseLevel level = coachLevelService.determineLevel(
+                messages,
+                "i am programming for the first time"
+        );
+
+        assertEquals(CoachResponseLevel.LEVEL_4_PARTIAL_EXPLANATION, level);
+    }
+
     private Message studentMessage(String content) {
         return new Message((HelpSession) null, MessageRole.STUDENT, content);
     }

@@ -235,4 +235,20 @@ class MessageFlowTest {
         String regex = ".*\\\"" + fieldName + "\\\":\\\"([^\\\"]+)\\\".*";
         return json.replaceAll(regex, "$1");
     }
+    @Test
+    void postMessage_withMultilineContentContainingLettersAndCode_isAccepted() throws Exception {
+        long sessionId = createHelpSession();
+
+        String messageRequest = """
+            {
+              "content": "Original nums would be [1, 2, 3]\\nnew_nums would be [2, 4, 6]\\n\\nconst nums = [1, 2, 3];\\n\\nconst new_nums = nums.map(num => num * 2);\\n\\nconsole.log(new_nums);"
+            }
+            """;
+
+        mockMvc.perform(post("/api/help-sessions/{id}/messages", sessionId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(messageRequest))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.role", is("COACH")));
+    }
 }

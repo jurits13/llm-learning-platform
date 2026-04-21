@@ -102,6 +102,25 @@ function App() {
         }
     }
 
+    function resetSessionFlow() {
+        setSession(null)
+        setMessages([])
+        setMessageInput('')
+        setSessionForm({
+            title: '',
+            problemDescription: '',
+            codeSnippet: '',
+            whatTried: '',
+        })
+        setError('')
+    }
+
+    function resetAll() {
+        resetSessionFlow()
+        setUser(null)
+        setUsername('')
+    }
+
     useEffect(() => {
         if (session?.id) {
             loadMessages(session.id)
@@ -215,13 +234,22 @@ function App() {
                                     <pre>{session.codeSnippet}</pre>
                                 </>
                             )}
+
+                            <div className="actions">
+                                <button type="button" onClick={resetSessionFlow}>
+                                    Create another session
+                                </button>
+                                <button type="button" onClick={resetAll}>
+                                    Start over
+                                </button>
+                            </div>
                         </section>
 
                         <section className="card chat-card">
                             <h2>3. Chat with the coach</h2>
 
                             <div className="messages">
-                                {messages.length === 0 && (
+                                {messages.length === 0 && !sendingMessage && (
                                     <div className="empty">No messages yet.</div>
                                 )}
 
@@ -246,7 +274,7 @@ function App() {
                                             {msg.content}
                                         </div>
 
-                                        {msg.role === 'COACH' && (
+                                        {false && msg.role === 'COACH' && (
                                             <div className="message-meta">
                                                 <span>Model: {msg.llmModel || '-'}</span>
                                                 <span>Prompt: {msg.promptVersion || '-'}</span>
@@ -255,6 +283,17 @@ function App() {
                                         )}
                                     </div>
                                 ))}
+
+                                {sendingMessage && (
+                                    <div className="message coach pending">
+                                        <div className="message-header">
+                                            <strong>COACH</strong>
+                                        </div>
+                                        <div className="message-content whitespace">
+                                            Thinking about your message...
+                                        </div>
+                                    </div>
+                                )}
                             </div>
 
                             <form onSubmit={sendMessage} className="form vertical">
@@ -278,12 +317,28 @@ function App() {
 }
 
 function readError(err) {
-    return (
-        err?.response?.data?.error ||
-        err?.response?.data?.message ||
-        err?.message ||
-        'Something went wrong'
-    )
+    const data = err?.response?.data
+    const status = err?.response?.status
+
+    if (err?.code === 'ECONNABORTED') {
+        return 'The request took too long. Please try again.'
+    }
+
+    if (status === 502 || status === 503 || status === 504) {
+        return 'The server is currently unavailable. Please try again in a moment.'
+    }
+
+    if (!data) {
+        return err?.message || 'Something went wrong'
+    }
+
+    if (data.fields && typeof data.fields === 'object') {
+        return Object.entries(data.fields)
+            .map(([field, message]) => `${field}: ${message}`)
+            .join(' | ')
+    }
+
+    return data.error || data.message || err?.message || 'Something went wrong'
 }
 
 export default App
