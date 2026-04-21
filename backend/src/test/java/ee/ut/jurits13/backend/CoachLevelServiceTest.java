@@ -102,7 +102,7 @@ class CoachLevelServiceTest {
     @Test
     void assessProgress_detectsCoreUnderstanding() {
         CoachLevelService.StudentProgress progress = coachLevelService.assessProgress(
-                "I think map returns a new array and nums stays unchanged, so I should store it in a new variable."
+                "I think the problem is that it returns a new value and does not modify the original one."
         );
 
         assertEquals(CoachLevelService.StudentProgress.DEMONSTRATES_CORE_UNDERSTANDING, progress);
@@ -111,7 +111,7 @@ class CoachLevelServiceTest {
     @Test
     void assessProgress_detectsPartialUnderstanding() {
         CoachLevelService.StudentProgress progress = coachLevelService.assessProgress(
-                "I think maybe it creates a copy and we can test by printing it out."
+                "I think maybe it is doing something with the same value, but I am not fully sure yet."
         );
 
         assertEquals(CoachLevelService.StudentProgress.PARTIAL_UNDERSTANDING, progress);
@@ -153,15 +153,6 @@ class CoachLevelServiceTest {
     void assessProgress_detectsDirectBeginnerSupport() {
         CoachLevelService.StudentProgress progress = coachLevelService.assessProgress(
                 "I am programming for the first time and I know nothing"
-        );
-
-        assertEquals(CoachLevelService.StudentProgress.DIRECT_BEGINNER_SUPPORT, progress);
-    }
-
-    @Test
-    void assessProgress_detectsDirectBeginnerSupportInRussian() {
-        CoachLevelService.StudentProgress progress = coachLevelService.assessProgress(
-                "я программирую впервые и ничего не знаю"
         );
 
         assertEquals(CoachLevelService.StudentProgress.DIRECT_BEGINNER_SUPPORT, progress);

@@ -138,21 +138,7 @@ public class CoachLevelService {
                 "i would use",
                 "we can use",
                 "i can use",
-                "maybe use",
-                "return ",
-                "print(",
-                "if ",
-                "for ",
-                "while ",
-                "=",
-                ".append(",
-                ".strip(",
-                ".get(",
-                "await ",
-                "def ",
-                "const ",
-                "let "
-        );
+                "maybe use");
     }
 
     private boolean needsMoreExplicitSupport(String lower) {
@@ -207,15 +193,24 @@ public class CoachLevelService {
     }
 
     private boolean looksLikeCode(String text) {
-        return text.contains("(")
-                || text.contains(")")
-                || text.contains("{")
-                || text.contains("}")
-                || text.contains("[")
-                || text.contains("]")
-                || text.contains("=")
-                || text.contains(":")
-                || text.contains(".");
+        int strongSignals = 0;
+
+        if (text.contains("(") && text.contains(")")) strongSignals++;
+        if (text.contains("=")) strongSignals++;
+        if (text.contains("{") || text.contains("}")) strongSignals++;
+        if (text.contains("[") || text.contains("]")) strongSignals++;
+        if (text.contains(":")) strongSignals++;
+        if (text.contains("def ")) strongSignals++;
+        if (text.contains("return ")) strongSignals++;
+        if (text.contains("print(")) strongSignals++;
+        if (text.contains("if ")) strongSignals++;
+        if (text.contains("for ")) strongSignals++;
+        if (text.contains("while ")) strongSignals++;
+        if (text.contains("const ") || text.contains("let ")) strongSignals++;
+        if (text.contains(".append(") || text.contains(".strip(") || text.contains(".get(")) strongSignals++;
+        if (text.contains("await ")) strongSignals++;
+
+        return strongSignals >= 2;
     }
 
     private boolean containsAny(String text, String... patterns) {

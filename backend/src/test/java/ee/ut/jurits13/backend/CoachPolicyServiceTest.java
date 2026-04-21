@@ -57,12 +57,12 @@ class CoachPolicyServiceTest {
     }
 
     @Test
-    void noQuestion_returnsNoGuidingQuestion() {
+    void noQuestionAndNoGuidanceSignal_returnsNoGuidingQuestion() {
         String raw = """
-                Good start.
-                One observation: querySelector only selects the element.
-                Next step: inspect whether the selector matches the HTML.
-                """;
+            Good start.
+            This explains the concept clearly.
+            The method changes the object in place.
+            """;
 
         CoachPolicyResult result = coachPolicyService.apply(raw);
 
