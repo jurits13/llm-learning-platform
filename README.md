@@ -1,7 +1,5 @@
 # LLM-Supported Learning Platform for Web Development Education
 
-This project was developed as part of a Bachelor's thesis.
-
 This project was developed as part of a Bachelor's thesis. Its goal is to build a web-based learning platform for web development where a Large Language Model (LLM) acts as a learning coach rather than a direct solution generator. Instead of immediately providing full code answers, the system guides learners using hints, reflective questions, debugging prompts, and small-step scaffolding.
 
 ## Thesis Context
